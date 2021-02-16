@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+  <style>
+    html, body {
+      height: 100%;
+    }
+
+    .container {
+      height: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .alert {
+      width: fit-content;
+    }
+
+    h1 {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      padding: 10px 0;
+      border-bottom: solid 1px lightgray;
+    }
+    
+    #message-box {
+      flex: 1;
+      background-color: #fff;
+      border-left: solid 1px lightgray;
+      border-right: solid 1px lightgray;
+    }
+    
+    #input-box {
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      background-color: #fff;
+      border-top: solid 1px lightgray;
+    }
+  </style>
+  <title>Express App</title>
+</head>
+<body class="bg-light">
+  <div class="container">
+    <h1 class="bg-light mb-0">Message Board</h1>
+
+    <div id="message-box" class="p-2">
+    </div>
+
+    <div id="input-box" class="bg-light pb-3 pt-3">
+      <form>
+        <div class="input-group">
+          <input id="message-input" class="form-control" type="text">
+          <div class="input-group-append">
+            <button class="btn btn-primary">Send</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+
+    socket.on('joined', (messages) => {
+      messages.forEach(msg => {
+        renderMessage(msg);
+      })
+    })
+
+    const messageBox = document.getElementById('message-box')
+    const input = document.getElementById('message-input');
+    document.querySelector('#input-box form').onsubmit = (e) => {
+      e.preventDefault();
+      let messageTxt = input.value;
+      if (messageTxt !== '') {
+        socket.emit('message', messageTxt);
+        renderMessage(messageTxt);
+      }
+    }
+
+    socket.on('message', renderMessage);
+
+    function renderMessage(messageTxt) {
+      const message = document.createElement('div');
+      message.classList.add('alert', 'alert-secondary');
+      message.innerText = messageTxt;
+      messageBox.append(message);
+      input.value = '';
+    }
+  </script>
+</body>
+</html>

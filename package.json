@@ -1,0 +1,17 @@
+{
+  "name": "express-template",
+  "version": "1.0.0",
+  "description": "A basic bare-bones express template.",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^3.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "John Reiley",
+  "license": "ISC"
+}
